@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model TripReport {
+  id                    String   @id @default(cuid())
+  status                String   // 'draft', 'active', 'archived', 'deleted'
+  schemaVersion         Int      @default(1)
+  currentStep           Int      @default(1)
+  sessionDate           DateTime?
+  psychedelicType       String?  // 'Mushroom', 'LSD'
+  dosageGrams           Float?
+  mushroomStrain        String?
+  intakeMethod          String?
+  location              String?
+  socialFactor          String?
+  intakeTime            String?
+  lastMealHoursAgo      Int?
+  mealDescription       String?
+  firstEffectsMinutes   Int?
+  firstEffectsActivity  String?
+  notes                 String?
+  formPayload           String?  // JSON string
+  
+  history               TripReportHistory[]
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  archivedAt            DateTime?
+  deletedAt             DateTime?
+}
+
+model TripReportHistory {
+  id              String   @id @default(cuid())
+  tripReportId    String
+  tripReport      TripReport @relation(fields: [tripReportId], references: [id])
+  version         Int
+  actionType      String   // 'create', 'save_draft', 'complete', 'edit', 'archive', 'delete', 'restore'
+  changedFields   String   // JSON string
+  snapshotBefore  String   // JSON string
+  snapshotAfter   String   // JSON string
+  createdAt       DateTime @default(now())
+}
