@@ -3,8 +3,9 @@ import TripForm from '../../../components/TripForm';
 import HistoryDrawer from '../../../components/HistoryDrawer';
 import { notFound } from 'next/navigation';
 
-export default async function EditPage({ params }: { params: { id: string } }) {
-  const report = await getTripReportById(params.id);
+export default async function EditPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const report = await getTripReportById(resolvedParams.id);
   
   if (!report) {
     notFound();

@@ -211,7 +211,14 @@ export default function TripForm({ initialData, reportId }: { initialData?: any,
         </div>
       </div>
 
-      <form onSubmit={handleSubmit(onFinalSave)}>
+      <form onSubmit={(e) => {
+        if (currentStep < getMaxSteps()) {
+          e.preventDefault();
+          handleNext();
+        } else {
+          handleSubmit(onFinalSave)(e);
+        }
+      }}>
         
         {/* STEP 1 */}
         <div className="step-container" style={{ display: currentStep === 1 ? 'block' : 'none', opacity: currentStep === 1 ? 1 : 0 }}>
